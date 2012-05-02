@@ -1,3 +1,5 @@
+// 2012-05-01 4DProxy_2.js  investigando la lentitud
+
 var ok= process.argv.length > 5;
 
 if (ok) {
