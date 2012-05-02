@@ -31,15 +31,14 @@ var offset= rsp- lp;
   console.log('Listening on localhost:'+ port+ " <-> "+ rsip+ ":"+ (port+offset));
 });
 
+var time_0= Date.now();
 var ctr= 0;
-var conexiones= {};
+var conexiones= 0;
 function clientConnection (clientSocket) {
   
   //Cada vez que conecte al proxy un cliente 4D, se ejecuta esta función.
   var puerto= clientSocket.address().port;
-  var numero= conexiones[puerto] ? conexiones[puerto]+= 1 : conexiones[puerto]= 1;
-  
-  console.log('**** NUEVA CONEXION ['+ conexiones[puerto]+ '] AL PUERTO: ['+ puerto+ ' <-> '+ (puerto+offset)+ '] **** ESTABLISHING');
+  var numero= conexiones++;
   
   var clientBuffer= [];
   var serverBuffer= [];
@@ -49,7 +48,7 @@ function clientConnection (clientSocket) {
   
   serverSocket.on('connect', function () {
     //Esto sólo se ejecuta si se consigue conectar al 4D Server.
-    console.log('**** NUEVA CONEXION ['+ conexiones[puerto]+ '] AL PUERTO: ['+ puerto+ ' <-> '+ (puerto+offset)+ '] **** ESTABLISHED OK');
+    console.log('**** NUEVA CONEXION ['+ numero+ '] AL PUERTO: ['+ puerto+ ' <-> '+ (puerto+offset)+ '] **** ESTABLISHED OK');
   });
   
   
@@ -60,7 +59,7 @@ function clientConnection (clientSocket) {
     if (!writer.timer) writer.timer= setTimeout(writer, lat);
     
     var str= data.toString('ascii').replace(/\W/g, ".");
-    console.log('i '+ '['+ numero+ '] '+ (ctr++)+ ' '+ data.length+ ' '+ str);
+    console.log('i '+ '['+ numero+ '] t:'+ ((Date.now()-time_0)/1000).toFixed(1)+ 's #'+ (ctr++)+ ' L:'+ data.length+ ' data:'+ str);
   });
   
   
@@ -71,7 +70,7 @@ function clientConnection (clientSocket) {
     if (!writer.timer) writer.timer= setTimeout(writer, lat);
     
     var str= data.toString('ascii').replace(/\W/g, ".");
-    console.log('o '+ '['+ numero+ '] '+ (ctr++)+ ' '+ data.length+ ' '+ str);
+    console.log('o '+ '['+ numero+ '] t:'+ ((Date.now()-time_0)/1000).toFixed(1)+ 's #'+ (ctr++)+ ' L:'+ data.length+ ' data:'+ str);
   });
   
   clientSocket.on('end', function () {
@@ -79,7 +78,6 @@ function clientConnection (clientSocket) {
     serverSocket.destroy();
     clientSocket= serverSocket= undefined;
     console.log('\nSe ha desconectado un cliente 4D del proxy -> Se ha desconectado el proxy del servidor 4D');
-    conexiones[puerto]-= 1;
   });
   
   
