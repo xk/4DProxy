@@ -48,7 +48,7 @@ function clientConnection (clientSocket) {
   
   serverSocket.on('connect', function () {
     //Esto sólo se ejecuta si se consigue conectar al 4D Server.
-    console.log('**** NUEVA CONEXION ['+ numero+ '] AL PUERTO: ['+ puerto+ ' <-> '+ (puerto+offset)+ '] **** ESTABLISHED OK');
+    console.log('  ['+ numero+ '] **** NUEVA CONEXION : ['+ puerto+ ' <-> '+ (puerto+offset)+ ']');
   });
   
   
@@ -77,7 +77,7 @@ function clientConnection (clientSocket) {
     //El cliente 4D ha desconectado del proxy. Hemos de desconectar del 4D Server también.
     serverSocket.destroy();
     clientSocket= serverSocket= undefined;
-    console.log('\nSe ha desconectado un cliente 4D del proxy -> Se ha desconectado el proxy del servidor 4D');
+    console.log('  ['+ numero+ '] **** SE HA DESCONECTADO');
   });
   
   
