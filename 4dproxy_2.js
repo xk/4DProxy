@@ -2,7 +2,7 @@
 
 // 2012-05-01 4DProxy_2.js  investigando la lentitud
 
-var ok= process.argv.length > 5;
+var ok= process.argv.length > 3;
 
 if (ok) {
   var args= process.argv.slice(2).sort();
@@ -11,26 +11,29 @@ if (ok) {
     var e= args.pop().split(':');
     params[e[0]]= e[1];
   }
-  ok= ('lat' in params) && ('rsp' in params) && ('rsip' in params) && ('lp' in params);
+  ok= ('sip' in params) && ('pp' in params);
 }
 
 if (!ok) {
-  console.log("4D proxy server\n\nEste programa sirve para dos cosas:\n- Una es mostrar el orden en que se producen las solicitudes y las respuestas entre un cliente y un servidor 4D conectados por tcp/ip.\n- La otra es introducir una latencia (expresada entre milisegundos) a cada paquete que se envía y a cada paquete que se recibe.\n\nNecesita 4 parámetros para funcionar:\nlat:ms     -> los milisegundos de latencia que hay que añadir\nrsip:ip    -> la IP del servidor remoto.\nrsp:puerto -> el puerto del servidor remoto.\nlp:puerto  -> el puerto local (de este ordenador) en el que estará el proxy.\n\nPor ejemplo, para arrancar este proxy en el puerto 12345 de este ordenador, y hacer que se conecte a un servidor 4D que esté en la IP 10.0.0.1 en el puerto 19813, habrá que teclear:\n\nnode 4dproxy.js lp:12345 rsip:10.0.0.1 rsp:19813\n");
+  console.log("*******************\n* 4D PROXY SERVER *\n*******************\n\n2011-06-15 jorge@jorgechamorro.com\n\nEste programa sirve para dos cosas:\n- Una es mostrar el orden en que se producen las solicitudes y las respuestas entre un cliente 4D y un servidor 4D conectados por tcp/ip.\n- La otra es introducir una latencia (expresada entre milisegundos) a cada paquete que se envía y a cada paquete que se recibe.\n\nNecesita 4 parámetros para funcionar:\n\nlat:ms    -> los milisegundos de latencia que hay que añadir (por defecto 0)\nsip:ip    -> la IP del servidor 4D remoto.\nsp:puerto -> el puerto del servidor 4D remoto (por defecto 19813).\npp:puerto del proxy -> el puerto al que hay que conectarse para acceder a través del proxy.\n\nPor ejemplo, para arrancar este proxy en el puerto 12345 de este ordenador, y hacer que se conecte a un servidor 4D que esté en la IP 10.0.0.1 en el puerto 19813, añadiendo una latencia de 50 ms habrá que teclear:\n\nnode 4dproxy.js pp:12345 sip:10.0.0.1 sp:19813 lat:50\n\nEl orden de los parámetros no importa.\nSi no se especifica lat: se supone que es 0.\nSi no se especifica sp: se supone que es 19813\n\n");
   return;
 }
 
 var net= require('net');
 
 var lat= (params.lat= (parseInt(params.lat, 10) || 0));
-var rsp= (params.rsp= (parseInt(params.rsp, 10) || 19813));
-var rsip= (params.rsip= (params.rsip || '0.0.0.0'));
-var lp= (params.lp= (parseInt(params.lp, 10) || 0));
+var sp= (params.sp= (parseInt(params.sp, 10) || 19813));
+var sip= (params.sip= (params.sip || '0.0.0.0'));
+var pp= (params.pp= (parseInt(params.pp, 10) || 0));
 console.log(params);
 
-var offset= rsp- lp;
-[lp, lp+1].forEach(function (port) {
-  net.createServer(clientConnection).listen(port);
-  console.log('Listening on localhost:'+ port+ " <-> "+ rsip+ ":"+ (port+offset));
+var offset= sp- pp;
+[pp-1, pp, pp+1].forEach(function (port) {
+  try {
+    net.createServer(clientConnection).listen(port);
+    console.log('Listening on localhost:'+ port+ " <-> "+ sip+ ":"+ (port+offset));
+  }
+  catch (e) {}
 });
 
 var time_0= Date.now();
@@ -46,7 +49,7 @@ function clientConnection (clientSocket) {
   var serverBuffer= [];
   
   //Abrimos una nueva conexión al 4D Server. Lo que llegue del cliente 4D se mandará al 4D Server, y viceversa.
-  var serverSocket= net.createConnection(puerto+offset, rsip);
+  var serverSocket= net.createConnection(puerto+offset, sip);
   
   serverSocket.on('connect', function () {
     //Esto sólo se ejecuta si se consigue conectar al 4D Server.
