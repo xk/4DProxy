@@ -4,9 +4,12 @@
 
 2011-06-15 jorge@jorgechamorro.com
 
-Este programa sirve para dos cosas:
-- Una es mostrar el orden en que se producen las solicitudes y las respuestas entre un cliente 4D y un servidor 4D conectados por tcp/ip.
-- La otra es introducir una latencia (expresada entre milisegundos) a cada paquete que se envía y a cada paquete que se recibe.
+4D / 4th Dimesion proxy
+
+Este programa sirve para:
+- Mostrar el orden en que se producen las solicitudes y las respuestas entre un cliente 4D y un servidor 4D conectados por tcp/ip.
+- Ver el contenido de los paquetes.
+- Introducir una latencia (expresada entre milisegundos) a cada paquete que se envía y a cada paquete que se recibe para poder simular la latencia de una conexión a servidores lejanos, por ejemplo cuando uno está en Europa y el otro en América. En una red local, conectado por ethernet, la latencia es menor de 1 milisegundo, pero a través de internet, de un continente a otro, la latencia es de varios cientos de milisegundos.
 
 Necesita 4 parámetros para funcionar:
 
