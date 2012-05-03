@@ -126,12 +126,12 @@ function clientConnection (clientSocket) {
       t= (t > 0) ? t : 0;
       if (t) {
         writer.timer= setTimeout(writer, t);
-        console.log('*************************************************** setTimeout(writer, '+ t+ ')');
+        //console.log('*************************************************** setTimeout(writer, '+ t+ ')');
       }
       else {
         process.nextTick(writer);
         writer.timer= 1;
-        console.log('*************************************************** process.nextTick(writer)');
+        //console.log('*************************************************** process.nextTick(writer)');
       }
     }
     else {
