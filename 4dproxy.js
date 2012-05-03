@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+// 2011-06-15 4DProxy.js  investigando la lentitud
+
 var ok= process.argv.length > 5;
 
 if (ok) {
