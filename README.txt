@@ -23,3 +23,4 @@ node 4dproxy.js pp:12345 sip:10.0.0.1 sp:19813 lat:50
 El orden de los parámetros no importa.
 Si no se especifica lat: se supone que es 0.
 Si no se especifica sp: se supone que es 19813
+Si no se especifica data: (o si es cero) se muestran todos los datos de cada paquete
